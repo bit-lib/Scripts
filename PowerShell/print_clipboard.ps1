@@ -4,11 +4,13 @@ Function print_clipboard
 {
     Add-Type -AssemblyName System.Windows.Forms
     $lst = @("Text", "UnicodeText", "Rtf", "Html", "CommaSeparatedValue")
+
+    $cb = [Windows.Forms.Clipboard]
     
     for($i=0; $i -lt 5; $i++){
         Write-Output "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-"
         Write-Output ("    ClipBoard: " + $lst[$i])
-        $res = [System.Windows.Forms.Clipboard]::GetText($i)
+        $res = $cb::GetText($i)
         Write-Output "----------------------------------------"
         Write-Output $res
         Write-Output "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-`r`n"
