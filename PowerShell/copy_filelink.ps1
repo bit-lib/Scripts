@@ -1,3 +1,8 @@
+# PowerShell Ver5.1ã§ã¯ã‚¯ãƒªãƒƒãƒ—ãƒœãƒ¼ãƒ‰æ–‡å­—åŒ–ã‘ã—ã¾ã™ã€‚
+# PowerShell Ver7.0.3ã§å‹•ä½œç¢ºèªOK
+# èµ·å‹•æ–¹æ³•: pwsh -ExecutionPolicy RemoteSigned ã‚¹ã‚¯ãƒªãƒ—ãƒˆãƒ‘ã‚¹ ãƒªãƒ³ã‚¯åŒ–ã—ãŸã„ãƒ‘ã‚¹
+
+# PowerShell Ver7.0.3 ã®ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã¯ã“ã¡ã‚‰ï¼šhttps://github.com/PowerShell/PowerShell/releases/tag/v7.0.3
 
 function Set-ClipboardText($text, $html){
     Add-Type -AssemblyName System.Windows.Forms
@@ -8,14 +13,17 @@ function Set-ClipboardText($text, $html){
 }
 
 function Get-HtmlStr_forClipboard($fragment){
-    # Clipboard—pƒ}[ƒJ[î•ñ
+    # https://docs.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/platform-apis/aa767917(v=vs.85)?redirectedfrom=MSDN
+    # Clipboardç”¨ãƒãƒ¼ã‚«ãƒ¼æƒ…å ±
     $marker_block = "Version:0.9`r`n" `
                   + "StartHTML:0000000000`r`n" `
                   + "EndHTML:0000000000`r`n" `
                   + "StartFragment:0000000000`r`n" `
                   + "EndFragment:0000000000`r`n"
-    # HTMLƒp[ƒc
+    # HTMLãƒ‘ãƒ¼ãƒ„
     $html_top = "<html>`r`n" `
+              + "<head>`r`n" `
+              + "</head>`r`n" `
               + "<body>`r`n" `
               + "<!--StartFragment-->`r`n"
     $html_end = "<!--EndFragment-->`r`n" `
@@ -25,7 +33,7 @@ function Get-HtmlStr_forClipboard($fragment){
 
     $html_str = $marker_block + $html_top + $fragment + $html_end
     
-    # ƒIƒtƒZƒbƒgî•ñ‘‚«‚İ
+    # ã‚ªãƒ•ã‚»ãƒƒãƒˆæƒ…å ±æ›¸ãè¾¼ã¿
     $html_str = $html_str.Replace("StartHTML:0000000000", "StartHTML:{0:0000000000}" -f $marker_block.Length)
     $html_str = $html_str.Replace("EndHTML:0000000000", "EndHTML:{0:0000000000}" -f $html_str.IndexOf("</html>"))
     $html_str = $html_str.Replace("StartFragment:0000000000", "StartFragment:{0:0000000000}" -f ($marker_block.Length + $html_top.Length))
@@ -58,23 +66,26 @@ function Get-ClipboardLinkText_Text($links){
     return $txt_str
 }
 
-#ƒeƒXƒgƒR[ƒh
+#ãƒ†ã‚¹ãƒˆã‚³ãƒ¼ãƒ‰
 function main($links){
 
-    # $links = @("c:\\PowerShell", "c:\\PowerShell2")
+    # $links = @("c:\\PowerShellãƒ†ã‚¹ãƒˆ", "c:\\PowerShell")
     
     $html_link = Get-ClipboardLinkText_Html $links "http://localhost:8000/lancher?path="
     $text_link = Get-ClipboardLinkText_Text $links
     
     # Write-Output $text_link
-    Write-Output $html_link
+    # Write-Output $html_link
     
-    # ƒNƒŠƒbƒvƒ{[ƒh‚É“\‚è•t‚¯
+    # ã‚¯ãƒªãƒƒãƒ—ãƒœãƒ¼ãƒ‰ã«è²¼ã‚Šä»˜ã‘
     Set-ClipboardText $text_link $html_link
     
-    # pause‚Ì‘ã‚í‚è
+    # pauseã®ä»£ã‚ã‚Š
     # Read-Host "please input.."
 }
 
-# D&D‚µ‚½ƒtƒ@ƒCƒ‹ƒpƒX‚Í$args‚ÉŠi”[‚³‚ê‚Ä‚¢‚é
+# $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+# $OutputEncoding = [console]::OutputEncoding = [Text.Encoding]::GetEncoding("utf-8")
+
+# D&Dã—ãŸãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹ã¯$argsã«æ ¼ç´ã•ã‚Œã¦ã„ã‚‹
 main $args
