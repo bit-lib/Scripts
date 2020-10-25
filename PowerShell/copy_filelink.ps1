@@ -4,7 +4,8 @@ function Set-ClipboardText($text, $html){
     $data = New-Object System.Windows.Forms.DataObject
     $data.SetData([System.Windows.Forms.DataFormats]::Text, $text)
     $data.SetData([System.Windows.Forms.DataFormats]::Html, $html)
-    [System.Windows.Forms.Clipboard]::SetDataObject($data)
+    [System.Windows.Forms.Clipboard]::SetDataObject($data, $true)
+
 }
 
 function Get-HtmlStr_forClipboard($fragment){
@@ -72,4 +73,5 @@ Write-Output $html_link
 # クリップボードに貼り付け
 Set-ClipboardText $text_link $html_link
 
+# pauseの代わり
 # Read-Host "please input.."
